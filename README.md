@@ -15,6 +15,13 @@ The project is organized into two main workspaces:
 ## Prerequisites
 Make sure you have [Node.js](https://nodejs.org/) installed on your local machine.
 
+## Environment Variables
+
+For the backend server to work correctly, you need an environment file. 
+Navigate to the `/backend` directory and copy the example environment file:
+1. Rename or copy `.env.example` to `.env` inside the `/backend` folder.
+2. Update the environment variables in `.env` with your actual configuration (e.g., MongoDB connection string, PORT, etc.).
+
 ## Getting Started
 
 ### 1. Installation
