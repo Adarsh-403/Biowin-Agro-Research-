@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate, useParams } from 'react-router-dom';
 import { ShieldCheck, Stethoscope, Warehouse, Truck, ArrowLeft, LogIn } from 'lucide-react';
-import './App.css';
+import DashboardLayout from './components/DashboardLayout';
+import AdminPageContent from './pages/AdminPage';
+import AdminUnitsPageContent from './pages/AdminUnitsPage';
+import { Layers } from 'lucide-react';
 
 // --- Auth Context Mock ---
 // Since we are focusing on Admin and bypassing standard Firebase email auth
@@ -76,45 +79,47 @@ const Login = ({ login, isAuthenticated, userRole }) => {
   const displayRole = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'System';
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
-          <div className="login-icon-wrapper">
-            <ShieldCheck size={40} className="text-green" />
+    <div className="min-h-screen flex items-center justify-center p-8 bg-gray-50">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8 text-center">
+        <div className="mb-8">
+          <div className="w-20 h-20 bg-primary-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ShieldCheck size={40} className="text-primary-green" />
           </div>
-          <h2>{displayRole} Login</h2>
-          <p>Please enter your credentials</p>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">{displayRole} Login</h2>
+          <p className="text-slate-500">Please enter your credentials</p>
         </div>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="bg-red-50 text-red-700 p-3 rounded-lg mb-6 text-sm font-medium">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label>Username</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-left">
+          <div className="flex flex-col gap-2">
+            <label className="font-medium text-slate-800 text-sm">Username</label>
             <input 
               type="text" 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="e.g. Admin123"
               required
+              className="px-4 py-3 border border-slate-200 rounded-lg text-base outline-none transition-all focus:border-primary-green focus:ring-4 focus:ring-primary-green/20"
             />
           </div>
-          <div className="form-group">
-            <label>Password</label>
+          <div className="flex flex-col gap-2">
+            <label className="font-medium text-slate-800 text-sm">Password</label>
             <input 
               type="password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
+              className="px-4 py-3 border border-slate-200 rounded-lg text-base outline-none transition-all focus:border-primary-green focus:ring-4 focus:ring-primary-green/20"
             />
           </div>
-          <button type="submit" className="login-button">
+          <button type="submit" className="bg-primary-green hover:bg-primary-dark text-white rounded-lg py-3.5 font-semibold flex items-center justify-center gap-2 mt-2 transition-all active:scale-[0.98]">
             <LogIn size={18} /> Sign In
           </button>
         </form>
-        <div className="login-footer">
-          <Link to="/" className="back-link-small">
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-slate-500 text-sm hover:text-primary-green transition-colors">
             <ArrowLeft size={14} /> Back to Dashboard
           </Link>
         </div>
@@ -132,15 +137,15 @@ const ProtectedRoute = ({ isAuthenticated, userRole, requiredRole, children }) =
 
 const DashboardCard = ({ icon: Icon, title, subtitle, linkTo, footerText }) => {
   return (
-    <Link to={linkTo} className="dashboard-card">
-      <div className="card-content">
-        <div className="card-icon">
+    <Link to={linkTo} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col group hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+      <div className="p-8 flex-grow flex flex-col items-center justify-center text-center">
+        <div className="text-primary-green mb-4 w-16 h-16 bg-primary-green/10 rounded-full flex items-center justify-center">
           <Icon size={32} />
         </div>
-        <h2 className="card-title">{title}</h2>
-        <p className="card-subtitle">{subtitle}</p>
+        <h2 className="text-xl font-semibold text-slate-800 mb-2">{title}</h2>
+        <p className="text-sm text-slate-500">{subtitle}</p>
       </div>
-      <div className="card-footer">
+      <div className="bg-primary-green group-hover:bg-primary-dark text-white p-3 text-center font-semibold text-sm tracking-wide transition-colors">
         {footerText}
       </div>
     </Link>
@@ -162,15 +167,15 @@ const Dashboard = ({ logout, isAuthenticated }) => {
   ];
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Biowin Dashboard</h1>
-        <p>Select a module to manage your operations</p>
+    <div className="max-w-7xl mx-auto p-8 min-h-screen">
+      <header className="mb-12 text-center relative flex flex-col items-center">
+        <h1 className="text-4xl font-bold text-slate-800 mb-2">Biowin Dashboard</h1>
+        <p className="text-slate-500 text-lg">Select a module to manage your operations</p>
         {isAuthenticated && (
-          <button onClick={logout} className="logout-button">Logout</button>
+          <button onClick={logout} className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Logout</button>
         )}
       </header>
-      <div className="card-grid">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {cards.map((card, index) => (
           <DashboardCard
             key={index}
@@ -187,21 +192,68 @@ const Dashboard = ({ logout, isAuthenticated }) => {
 };
 
 const PageTemplate = ({ title, description }) => (
-  <div className="page-container">
-    <Link to="/" className="back-link">
-      <ArrowLeft size={20} /> Back to Dashboard
-    </Link>
-    <div className="page-content-card">
-      <h1 className="page-title text-green">{title}</h1>
-      <p>{description}</p>
-    </div>
+  <div className="bg-white p-8 rounded-xl shadow-sm m-8">
+    <h1 className="text-3xl font-bold text-primary-green mb-4">{title}</h1>
+    <p className="text-slate-700">{description}</p>
   </div>
 );
 
-const AdminPage = () => <PageTemplate title="Admin Dashboard" description="This is the secure admin management area. Only accessible by authorized admins." />;
-const UnitPage = () => <PageTemplate title="Unit Operations" description="Manage all operational units here." />;
-const WarehousePage = () => <PageTemplate title="Warehouse Management" description="Inventory and stock controls." />;
-const ConvoyPage = () => <PageTemplate title="Convoy Tracking" description="Fleet and logistics management." />;
+const AdminPage = ({ logout }) => {
+  const navItems = [
+    { label: 'Admin Center', icon: ShieldCheck, path: '/admin' },
+    { label: 'Units', icon: Layers, path: '/admin/units' }
+  ];
+  return (
+    <DashboardLayout navItems={navItems} logout={logout}>
+      <AdminPageContent />
+    </DashboardLayout>
+  );
+};
+
+const AdminUnits = ({ logout }) => {
+  const navItems = [
+    { label: 'Admin Center', icon: ShieldCheck, path: '/admin' },
+    { label: 'Units', icon: Layers, path: '/admin/units' }
+  ];
+  return (
+    <DashboardLayout navItems={navItems} logout={logout}>
+      <AdminUnitsPageContent />
+    </DashboardLayout>
+  );
+};
+
+const UnitPage = ({ logout }) => {
+  const navItems = [
+    { label: 'Units', icon: Stethoscope, path: '/unit' }
+  ];
+  return (
+    <DashboardLayout navItems={navItems} logout={logout}>
+      <PageTemplate title="Unit Operations" description="Manage all operational units here." />
+    </DashboardLayout>
+  );
+};
+
+const WarehousePage = ({ logout }) => {
+  const navItems = [
+    { label: 'Warehouse', icon: Warehouse, path: '/warehouse' }
+  ];
+  return (
+    <DashboardLayout navItems={navItems} logout={logout}>
+      <PageTemplate title="Warehouse Management" description="Inventory and stock controls." />
+    </DashboardLayout>
+  );
+};
+
+const ConvoyPage = ({ logout }) => {
+  const navItems = [
+    { label: 'Convoy', icon: Truck, path: '/convoy' }
+  ];
+  return (
+    <DashboardLayout navItems={navItems} logout={logout}>
+      <PageTemplate title="Convoy Tracking" description="Fleet and logistics management." />
+    </DashboardLayout>
+  );
+};
 
 function App() {
   const { isAuthenticated, userRole, login, logout } = useAuth();
@@ -216,22 +268,23 @@ function App() {
         {/* Protected Routes */}
         <Route path="/admin" element={
           <ProtectedRoute isAuthenticated={isAuthenticated} userRole={userRole} requiredRole="admin">
-            <AdminPage />
+            <AdminPage logout={logout} />
           </ProtectedRoute>
         } />
-        <Route path="/unit" element={
-          <ProtectedRoute isAuthenticated={isAuthenticated} userRole={userRole} requiredRole="unit">
-            <UnitPage />
+        <Route path="/admin/units" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated} userRole={userRole} requiredRole="admin">
+            <AdminUnits logout={logout} />
           </ProtectedRoute>
         } />
+        <Route path="/unit" element={<UnitPage logout={logout} />} />
         <Route path="/warehouse" element={
           <ProtectedRoute isAuthenticated={isAuthenticated} userRole={userRole} requiredRole="warehouse">
-            <WarehousePage />
+            <WarehousePage logout={logout} />
           </ProtectedRoute>
         } />
         <Route path="/convoy" element={
           <ProtectedRoute isAuthenticated={isAuthenticated} userRole={userRole} requiredRole="convoy">
-            <ConvoyPage />
+            <ConvoyPage logout={logout} />
           </ProtectedRoute>
         } />
       </Routes>
