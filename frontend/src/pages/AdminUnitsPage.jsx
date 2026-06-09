@@ -143,7 +143,7 @@ const AdminUnitsPage = () => {
                   </td>
                   <td>{unit.region}</td>
                   <td>{unit.totalSales || 0}</td>
-                  <td>${unit.revenue || 0}</td>
+                  <td>₹{unit.revenue || 0}</td>
                   <td>
                     <span className={`status-badge ${(unit.status || 'Active').toLowerCase()}`}>
                       {unit.status || 'Active'}
@@ -218,18 +218,6 @@ const AdminUnitsPage = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Status</label>
-                <select 
-                  value={newUnit.status || 'Active'} 
-                  onChange={(e) => setNewUnit({...newUnit, status: e.target.value})}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Maintenance">Maintenance</option>
-                  <option value="Offline">Offline</option>
-                </select>
-              </div>
-              
               <div className="modal-actions">
                 <button type="button" className="action-button secondary" onClick={() => setIsModalOpen(false)}>
                   Cancel
@@ -284,24 +272,12 @@ const AdminUnitsPage = () => {
               </div>
 
               <div className="form-group">
-                <label>Revenue ($)</label>
+                <label>Revenue (₹)</label>
                 <input 
                   type="number" 
                   value={editingUnit.revenue || 0} 
                   onChange={(e) => setEditingUnit({...editingUnit, revenue: e.target.value})}
                 />
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select 
-                  value={editingUnit.status || 'Active'} 
-                  onChange={(e) => setEditingUnit({...editingUnit, status: e.target.value})}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Maintenance">Maintenance</option>
-                  <option value="Offline">Offline</option>
-                </select>
               </div>
               
               <div className="modal-actions">

@@ -289,10 +289,68 @@ app.post('/api/units/:unitId/products', async (req, res) => {
   }
 });
 
+// Edit a product's price in unit stock
+app.put('/api/units/:unitId/products/:productId', async (req, res) => {
+  const { unitId, productId } = req.params;
+  const { price } = req.body;
+
+  if (price === undefined || isNaN(Number(price))) {
+    return res.status(400).json({ success: false, message: "Valid price is required" });
+  }
+
+  try {
+    const db = client.db("Units");
+    const unit = await db.collection("units_metadata").findOne({ unitId });
+    if (!unit) {
+      return res.status(404).json({ success: false, message: "Unit not found" });
+    }
+
+    const unitDb = client.db(`Unit_${unitId}`);
+    const result = await unitDb.collection("stocks").updateOne(
+      { productId },
+      { $set: { price: Number(price) } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, message: "Product not found in unit stock" });
+    }
+
+    res.status(200).json({ success: true, message: "Product price updated successfully" });
+  } catch (err) {
+    console.error("Error updating unit product price:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Delete a product from unit stock
+app.delete('/api/units/:unitId/products/:productId', async (req, res) => {
+  const { unitId, productId } = req.params;
+
+  try {
+    const db = client.db("Units");
+    const unit = await db.collection("units_metadata").findOne({ unitId });
+    if (!unit) {
+      return res.status(404).json({ success: false, message: "Unit not found" });
+    }
+
+    const unitDb = client.db(`Unit_${unitId}`);
+    const result = await unitDb.collection("stocks").deleteOne({ productId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "Product not found in unit stock" });
+    }
+
+    res.status(200).json({ success: true, message: "Product deleted from stock successfully" });
+  } catch (err) {
+    console.error("Error deleting unit product from stock:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 // Process a sale (billing)
 app.post('/api/units/:unitId/sell', async (req, res) => {
   const { unitId } = req.params;
-  const { items } = req.body; // Array of { productName, quantity, price }
+  const { items, paymentMethod } = req.body; // Array of { productName, quantity, price } and paymentMethod string
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ success: false, message: "No items provided for sale" });
@@ -343,6 +401,7 @@ app.post('/api/units/:unitId/sell', async (req, res) => {
       timestamp: new Date(),
       items,
       totalAmount,
+      paymentMethod: paymentMethod || 'Cash'
     };
     await unitDb.collection("sales").insertOne(saleRecord);
 
