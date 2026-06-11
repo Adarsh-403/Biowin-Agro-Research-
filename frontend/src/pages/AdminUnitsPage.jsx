@@ -16,7 +16,7 @@ const AdminUnitsPage = () => {
 
   const fetchUnits = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/units');
+      const response = await fetch('/api/units');
       const data = await response.json();
       if (data.success) {
         setUnits(data.units);
@@ -31,7 +31,7 @@ const AdminUnitsPage = () => {
   const handleAddUnit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/units', {
+      const response = await fetch('/api/units', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUnit)
@@ -53,7 +53,7 @@ const AdminUnitsPage = () => {
   const handleEditUnit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/api/units/${editingUnit.unitId}`, {
+      const response = await fetch(`/api/units/${editingUnit.unitId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingUnit)
@@ -74,7 +74,7 @@ const AdminUnitsPage = () => {
   const handleDeleteUnit = async (unitId) => {
     if (!window.confirm("Are you sure you want to delete this unit?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/units/${unitId}`, {
+      const response = await fetch(`/api/units/${unitId}`, {
         method: 'DELETE'
       });
       const data = await response.json();

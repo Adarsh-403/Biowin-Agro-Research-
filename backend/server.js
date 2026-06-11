@@ -41,9 +41,11 @@ async function run() {
 run().catch(console.dir);
 
 // Start Express server independently of initial DB connection
-app.listen(port, () => {
-  console.log(`Backend server is running on port: ${port}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Backend server is running on port: ${port}`);
+  });
+}
 
 // Placeholder route for Admin Authentication (as mentioned in previous context)
 app.post('/api/auth/admin-login', async (req, res) => {
@@ -978,3 +980,4 @@ app.get('/api/units/:unitId/deliveries', async (req, res) => {
   }
 });
 
+module.exports = app;

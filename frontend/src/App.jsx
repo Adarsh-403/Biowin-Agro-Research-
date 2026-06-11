@@ -48,7 +48,7 @@ const useAuth = () => {
         const endpoint = expectedRole === 'warehouse' ? '/api/auth/warehouse-login' : '/api/auth/convoy-login';
         const bodyIdField = expectedRole === 'warehouse' ? 'warehouseId' : 'convoyId';
         
-        const res = await fetch(`http://localhost:5000${endpoint}`, {
+        const res = await fetch(`${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ [bodyIdField]: username, password })
@@ -563,7 +563,7 @@ const UnitPage = () => {
 
   const fetchGlobalProducts = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/warehouses/products');
+      const res = await fetch('/api/warehouses/products');
       const data = await res.json();
       if (data.success) {
         setGlobalProducts(data.products);
@@ -575,7 +575,7 @@ const UnitPage = () => {
 
   const fetchDeliveries = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/deliveries`);
+      const res = await fetch(`/api/units/${unitData.unitId}/deliveries`);
       const data = await res.json();
       if (data.success) {
         setDeliveries(data.bills);
@@ -587,7 +587,7 @@ const UnitPage = () => {
 
   const fetchLatestMetadata = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/units');
+      const res = await fetch('/api/units');
       const data = await res.json();
       if (data.success) {
         const currentUnit = data.units.find(u => u.unitId === unitData.unitId);
@@ -604,7 +604,7 @@ const UnitPage = () => {
   const fetchProducts = async () => {
     if (!unitData) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/products`);
+      const res = await fetch(`/api/units/${unitData.unitId}/products`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.products);
@@ -617,7 +617,7 @@ const UnitPage = () => {
   const fetchSales = async () => {
     if (!unitData) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/sales`);
+      const res = await fetch(`/api/units/${unitData.unitId}/sales`);
       const data = await res.json();
       if (data.success) {
         setSales(data.sales);
@@ -631,7 +631,7 @@ const UnitPage = () => {
     e.preventDefault();
     setLoginError('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/unit-login', {
+      const res = await fetch('/api/auth/unit-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ unitId: unitIdInput, password: passwordInput })
@@ -675,7 +675,7 @@ const UnitPage = () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/products`, {
+      const res = await fetch(`/api/units/${unitData.unitId}/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: selectedStockProduct, quantity: Number(productQty) })
@@ -701,7 +701,7 @@ const UnitPage = () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/products/${productId}`, {
+      const res = await fetch(`/api/units/${unitData.unitId}/products/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ price: Number(editingStockPrice) })
@@ -723,7 +723,7 @@ const UnitPage = () => {
   const handleDeleteStockProduct = async (productId) => {
     if (!window.confirm("Are you sure you want to delete this product from stock?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/products/${productId}`, {
+      const res = await fetch(`/api/units/${unitData.unitId}/products/${productId}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -783,7 +783,7 @@ const UnitPage = () => {
     setBillingMessage({ type: '', text: '' });
     if (cart.length === 0) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}/sell`, {
+      const res = await fetch(`/api/units/${unitData.unitId}/sell`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items: cart, paymentMethod })
@@ -1020,7 +1020,7 @@ const UnitPage = () => {
                 onChange={async (e) => {
                   const newStatus = e.target.value;
                   try {
-                    const res = await fetch(`http://localhost:5000/api/units/${unitData.unitId}`, {
+                    const res = await fetch(`/api/units/${unitData.unitId}`, {
                       method: 'PUT',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ status: newStatus })
@@ -1839,7 +1839,7 @@ const WarehouseProductsPageContent = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/warehouses/products');
+      const res = await fetch('/api/warehouses/products');
       const data = await res.json();
       if (data.success) {
         setProducts(data.products);
@@ -1860,8 +1860,8 @@ const WarehouseProductsPageContent = () => {
 
     try {
       const url = editProductId 
-        ? `http://localhost:5000/api/warehouses/products/${editProductId}`
-        : 'http://localhost:5000/api/warehouses/products';
+        ? `/api/warehouses/products/${editProductId}`
+        : '/api/warehouses/products';
       const method = editProductId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -1887,7 +1887,7 @@ const WarehouseProductsPageContent = () => {
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/warehouses/products/${productId}`, {
+      const res = await fetch(`/api/warehouses/products/${productId}`, {
         method: 'DELETE'
       });
       const data = await res.json();
@@ -1905,7 +1905,7 @@ const WarehouseProductsPageContent = () => {
 
   const handleToggleAvailability = async (product) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/warehouses/products/${product.productId}`, {
+      const res = await fetch(`/api/warehouses/products/${product.productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isAvailable: !product.isAvailable })
