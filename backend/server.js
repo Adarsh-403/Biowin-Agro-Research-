@@ -692,7 +692,7 @@ app.get('/api/warehouses/products', async (req, res) => {
 
 // Add new product to warehouse collection
 app.post('/api/warehouses/products', async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, expiryDate } = req.body;
   
   if (!name || price === undefined) {
     return res.status(400).json({ success: false, message: "Missing required fields" });
@@ -714,6 +714,7 @@ app.post('/api/warehouses/products', async (req, res) => {
       productId: newId,
       name: normalizedName,
       price: Number(price),
+      expiryDate: expiryDate ? new Date(expiryDate) : null,
       isAvailable: true,
       createdAt: new Date()
     };
@@ -729,7 +730,7 @@ app.post('/api/warehouses/products', async (req, res) => {
 // Edit a warehouse product
 app.put('/api/warehouses/products/:productId', async (req, res) => {
   const { productId } = req.params;
-  const { name, price, isAvailable } = req.body;
+  const { name, price, isAvailable, expiryDate } = req.body;
   
   try {
     const db = client.db("Warehouses");
@@ -737,6 +738,7 @@ app.put('/api/warehouses/products/:productId', async (req, res) => {
     if (name !== undefined) updateData.name = name.trim();
     if (price !== undefined) updateData.price = Number(price);
     if (isAvailable !== undefined) updateData.isAvailable = Boolean(isAvailable);
+    if (expiryDate !== undefined) updateData.expiryDate = expiryDate ? new Date(expiryDate) : null;
 
     const result = await db.collection("products").updateOne(
       { productId },

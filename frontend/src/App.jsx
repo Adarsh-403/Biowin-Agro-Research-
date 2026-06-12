@@ -1573,7 +1573,7 @@ const UnitPage = () => {
                     </tr>
                   ) : sales.map((sale) => (
                     sale.items.map((item, idx) => (
-                      <tr key={`${sale._id}-${idx}`} className="border-b border-slate-100 text-slate-600 hover:bg-slate-50 transition-colors text-left">
+                      <tr key={`${sale._id}-${idx}`} className={`text-slate-600 hover:bg-slate-50 transition-colors text-left ${idx === sale.items.length - 1 ? 'border-b-2 border-slate-200' : 'border-b border-slate-100 border-dashed'}`}>
                         {idx === 0 ? (
                           <>
                             <td className="py-3.5 px-4 font-mono text-xs font-bold text-slate-400" rowSpan={sale.items.length}>
@@ -1819,6 +1819,7 @@ const WarehouseProductsPageContent = () => {
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState('');
   const [productPrice, setProductPrice] = useState('');
+  const [productExpiryDate, setProductExpiryDate] = useState('');
   const [message, setMessage] = useState({ type: '', text: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [editProductId, setEditProductId] = useState(null);
@@ -1857,13 +1858,14 @@ const WarehouseProductsPageContent = () => {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: productName, price: productPrice })
+        body: JSON.stringify({ name: productName, price: productPrice, expiryDate: productExpiryDate || null })
       });
       const data = await res.json();
       if (data.success) {
         setMessage({ type: 'success', text: data.message });
         setProductName('');
         setProductPrice('');
+        setProductExpiryDate('');
         setEditProductId(null);
         fetchProducts();
       } else {
@@ -1913,6 +1915,7 @@ const WarehouseProductsPageContent = () => {
     setEditProductId(product.productId);
     setProductName(product.name);
     setProductPrice(product.price);
+    setProductExpiryDate(product.expiryDate ? new Date(product.expiryDate).toISOString().split('T')[0] : '');
     setMessage({ type: '', text: '' });
   };
 
@@ -1920,6 +1923,7 @@ const WarehouseProductsPageContent = () => {
     setEditProductId(null);
     setProductName('');
     setProductPrice('');
+    setProductExpiryDate('');
     setMessage({ type: '', text: '' });
   };
 
@@ -1951,6 +1955,7 @@ const WarehouseProductsPageContent = () => {
                 <th className="py-3 px-4">Hex ID</th>
                 <th className="py-3 px-4">Product Name</th>
                 <th className="py-3 px-4">Price</th>
+                <th className="py-3 px-4">Expiry Date</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
@@ -1965,6 +1970,7 @@ const WarehouseProductsPageContent = () => {
                   <td className="py-3.5 px-4 font-mono text-xs font-bold text-slate-400">{prod.productId || 'N/A'}</td>
                   <td className="py-3.5 px-4 font-semibold text-slate-800">{prod.name}</td>
                   <td className="py-3.5 px-4">₹{Number(prod.price).toFixed(2)}</td>
+                  <td className="py-3.5 px-4 text-slate-500 text-sm">{prod.expiryDate ? new Date(prod.expiryDate).toLocaleDateString() : 'N/A'}</td>
                   <td className="py-3.5 px-4">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                       prod.isAvailable !== false ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
@@ -2039,6 +2045,15 @@ const WarehouseProductsPageContent = () => {
               value={productPrice}
               onChange={(e) => setProductPrice(e.target.value)}
               placeholder="e.g. 12.50"
+              className="px-3.5 py-2 border border-slate-200 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 text-left">
+            <label className="text-sm font-semibold text-slate-600">Expiry Date (Optional)</label>
+            <input 
+              type="date"
+              value={productExpiryDate}
+              onChange={(e) => setProductExpiryDate(e.target.value)}
               className="px-3.5 py-2 border border-slate-200 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10"
             />
           </div>
