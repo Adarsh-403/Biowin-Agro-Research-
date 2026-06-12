@@ -379,7 +379,7 @@ const Dashboard = ({ logout, isAuthenticated }) => {
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
             <img 
-              src="/logo.png" 
+              src={`${import.meta.env.BASE_URL}logo.png`} 
               alt="SIGWE Logo" 
               style={{ 
                 height: '80px', 
