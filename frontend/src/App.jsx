@@ -1356,30 +1356,33 @@ const UnitPage = () => {
         {activeTab === 'billing' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Products Grid (Left Side - POS Style) */}
-            <div className="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold text-slate-800 m-0">Point of Sale</h3>
-                <div className="relative w-64">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={billingSearchQuery}
-                    onChange={(e) => setBillingSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-spice-dark focus:ring-1 focus:ring-spice-dark"
-                  />
+            <div className="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col h-[calc(100vh-140px)]">
+              <div className="p-6 pb-4 border-b border-slate-100 shrink-0">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-bold text-slate-800 m-0">Point of Sale</h3>
+                  <div className="relative w-64">
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={billingSearchQuery}
+                      onChange={(e) => setBillingSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-spice-dark focus:ring-1 focus:ring-spice-dark"
+                    />
+                  </div>
                 </div>
               </div>
               
-              {billingMessage.text && (
-                <div className={`p-4 rounded-lg mb-6 text-sm font-semibold border ${
-                  billingMessage.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
-                }`}>
-                  {billingMessage.text}
-                </div>
-              )}
+              <div className="p-6 pt-5 overflow-y-auto flex-grow custom-scrollbar">
+                {billingMessage.text && (
+                  <div className={`p-4 rounded-lg mb-6 text-sm font-semibold border ${
+                    billingMessage.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
+                  }`}>
+                    {billingMessage.text}
+                  </div>
+                )}
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {products.filter(p => p.name.toLowerCase().includes(billingSearchQuery.toLowerCase()) || (p.productId && p.productId.toLowerCase().includes(billingSearchQuery.toLowerCase()))).map(p => {
                   const outOfStock = p.quantity <= 0;
                   return (
@@ -1387,7 +1390,7 @@ const UnitPage = () => {
                       key={p._id}
                       onClick={() => !outOfStock && quickAddToCart(p)}
                       disabled={outOfStock}
-                      className={`relative p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                      className={`relative p-4 rounded-xl border-2 text-left transition-all duration-200 flex flex-col items-stretch gap-0 whitespace-normal ${
                         outOfStock 
                           ? 'border-slate-100 bg-slate-50 opacity-60 cursor-not-allowed' 
                           : 'border-slate-100 bg-white hover:border-spice-dark hover:shadow-md cursor-pointer active:scale-95'
@@ -1405,6 +1408,7 @@ const UnitPage = () => {
                 {products.filter(p => p.name.toLowerCase().includes(billingSearchQuery.toLowerCase()) || (p.productId && p.productId.toLowerCase().includes(billingSearchQuery.toLowerCase()))).length === 0 && (
                   <div className="col-span-full py-12 text-center text-slate-400 font-medium">No products found.</div>
                 )}
+              </div>
               </div>
             </div>
 
