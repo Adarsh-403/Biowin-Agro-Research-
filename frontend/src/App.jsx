@@ -2090,7 +2090,7 @@ function App() {
   const { isAuthenticated, userRole, login, logout } = useAuth();
 
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Dashboard logout={logout} isAuthenticated={isAuthenticated} />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
