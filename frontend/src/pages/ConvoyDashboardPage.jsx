@@ -53,7 +53,7 @@ const ConvoyDashboardPage = ({ convoyId }) => {
   // ── API helpers ──────────────────────────────────────────────
   const fetchJobs = async () => {
     try {
-      const res  = await fetch(`/api/convoys/${convoyId}/jobs`);
+      const res  = await fetch((import.meta.env.VITE_API_URL || '') + `/api/convoys/${convoyId}/jobs`);
       const data = await res.json();
       if (data.success) {
         setJobs(data.jobs);
@@ -69,7 +69,7 @@ const ConvoyDashboardPage = ({ convoyId }) => {
 
   const fetchUnits = async () => {
     try {
-      const res  = await fetch('/api/units');
+      const res  = await fetch((import.meta.env.VITE_API_URL || '') + '/api/units');
       const data = await res.json();
       if (data.success) setUnits(data.units);
     } catch (err) { console.error('fetchUnits:', err); }
@@ -77,7 +77,7 @@ const ConvoyDashboardPage = ({ convoyId }) => {
 
   const fetchGlobalProducts = async () => {
     try {
-      const res  = await fetch('/api/warehouses/products');
+      const res  = await fetch((import.meta.env.VITE_API_URL || '') + '/api/warehouses/products');
       const data = await res.json();
       if (data.success) setGlobalProducts(data.products);
     } catch (err) { console.error('fetchGlobalProducts:', err); }
@@ -86,7 +86,7 @@ const ConvoyDashboardPage = ({ convoyId }) => {
   // ── Handlers ─────────────────────────────────────────────────
   const handleStartJob = async () => {
     try {
-      const res  = await fetch(`/api/convoys/${convoyId}/jobs`, { method: 'POST' });
+      const res  = await fetch((import.meta.env.VITE_API_URL || '') + `/api/convoys/${convoyId}/jobs`, { method: 'POST' });
       const data = await res.json();
       if (data.success) fetchJobs();
     } catch (err) { console.error('handleStartJob:', err); }

@@ -16,7 +16,7 @@ const AdminWarehousesPage = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await fetch('/api/warehouses');
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + '/api/warehouses');
       const data = await response.json();
       if (data.success) {
         setWarehouses(data.warehouses);
@@ -31,7 +31,7 @@ const AdminWarehousesPage = () => {
   const handleAddWarehouse = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/warehouses', {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + '/api/warehouses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newWarehouse)
@@ -53,7 +53,7 @@ const AdminWarehousesPage = () => {
   const handleEditWarehouse = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/warehouses/${editingWarehouse.warehouseId}`, {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + `/api/warehouses/${editingWarehouse.warehouseId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingWarehouse)
@@ -74,7 +74,7 @@ const AdminWarehousesPage = () => {
   const handleDeleteWarehouse = async (warehouseId) => {
     if (!window.confirm("Are you sure you want to delete this warehouse?")) return;
     try {
-      const response = await fetch(`/api/warehouses/${warehouseId}`, {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + `/api/warehouses/${warehouseId}`, {
         method: 'DELETE'
       });
       const data = await response.json();

@@ -16,7 +16,7 @@ const AdminConvoysPage = () => {
 
   const fetchConvoys = async () => {
     try {
-      const response = await fetch('/api/convoys');
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + '/api/convoys');
       const data = await response.json();
       if (data.success) {
         setConvoys(data.convoys);
@@ -31,7 +31,7 @@ const AdminConvoysPage = () => {
   const handleAddConvoy = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/convoys', {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + '/api/convoys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newConvoy)
@@ -53,7 +53,7 @@ const AdminConvoysPage = () => {
   const handleEditConvoy = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/convoys/${editingConvoy.convoyId}`, {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + `/api/convoys/${editingConvoy.convoyId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingConvoy)
@@ -74,7 +74,7 @@ const AdminConvoysPage = () => {
   const handleDeleteConvoy = async (convoyId) => {
     if (!window.confirm("Are you sure you want to delete this convoy?")) return;
     try {
-      const response = await fetch(`/api/convoys/${convoyId}`, {
+      const response = await fetch((import.meta.env.VITE_API_URL || '') + `/api/convoys/${convoyId}`, {
         method: 'DELETE'
       });
       const data = await response.json();
